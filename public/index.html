@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="hr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icons/icon-192.png" />
+  <title>PhotoQueue PWA</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>PhotoQueue PWA</h1>
+    <p>Kamera → offline queue → background sync → push notifikacija</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>1) Dozvole</h2>
+      <div class="row">
+        <button id="btnEnableNotifs">Enable push notifikacije</button>
+        <div class="hint" id="notifStatus">Notifikacije: (nije provjereno)</div>
+      </div>
+      <div class="hint" id="installHint"></div>
+    </section>
+
+    <section class="card">
+      <h2>2) Kamera (native API)</h2>
+      <p class="hint" id="cameraNote"></p>
+      <div class="row" style="gap:12px; flex-wrap:wrap">
+        <button id="btnStartCam">Start kamera</button>
+        <button id="btnSnap" class="secondary" disabled>Snimi fotku</button>
+        <input id="fileFallback" type="file" accept="image/*" style="display:none" />
+        <button id="btnPickFile" class="secondary" style="display:none">Odaberi sliku (fallback)</button>
+      </div>
+      <div class="media">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas" width="640" height="480" style="display:none"></canvas>
+      </div>
+      <div class="hint">Ako si offline, fotka se sprema u queue. Kad se vrati mreža, SW odradi background sync i server pošalje push.</div>
+    </section>
+
+    <section class="card">
+      <h2>3) Queue & status</h2>
+      <div class="row">
+        <span class="badge" id="onlineBadge">(status)</span>
+        <button id="btnForceFlush" class="secondary">Pokušaj upload (fallback bez BgSync)</button>
+      </div>
+      <div class="hint">Ovdje vidiš sve queued fotke (IndexedDB). Nakon uspješnog slanja nestanu iz liste.</div>
+      <div id="queueList" class="grid"></div>
+    </section>
+
+    <section class="card">
+      <h2>Kako testirati offline shell</h2>
+      <ol>
+        <li>Otvori DevTools → Network → označi <b>Offline</b></li>
+        <li>Refresh</li>
+        <li>App shell se i dalje učita (offline fallback radi)</li>
+      </ol>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" style="display:none"></div>
+
+  <script src="/idb.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
